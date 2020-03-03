@@ -1,0 +1,20 @@
+.rot270{
+    transform: rotate(270deg);
+}
+
+.drum-container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.btn-dash{
+    display: flex;
+}
+
+.slider-dash{
+    margin-top:50px;
+    display: flex;
+}

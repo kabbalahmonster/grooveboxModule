@@ -1,0 +1,16 @@
+<div class="drum-container">
+  <h1>DRUM LOOP MODULE v1.0</h1>
+  <div class="btn-dash">
+    <button (click)="drumSynth.triggerAttackRelease('C2','8n')">TRIGGER DRUM</button>
+    <button (click)="setup()">START LOOP</button>
+    <button (click)="stopLoop()">STOP LOOP</button>
+  </div>
+  <div class="slider-dash">
+    <input class="rot270" (input)="updateBPM()" type="range" min="0" max="240" [(ngModel)]="this.BPM">
+    <b>{{ this.BPM }}</b>
+    <input class="rot270" (input)="updatePitch()" type="range" min="-12" max="12" [(ngModel)]="this.pitch">
+    <b>{{ this.pitch }}-SemiTones</b>
+    <input class="rot270" (input)="updateBit()" type="range" min="1" max="8" [(ngModel)]="this.bitrate">
+    <b>{{ this.bitrate }}-Bit</b>
+  </div>
+</div>
