@@ -1,0 +1,7 @@
+{
+  "name": "FuzzGroovebox",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
