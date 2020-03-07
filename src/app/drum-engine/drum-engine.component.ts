@@ -20,6 +20,10 @@ export class DrumEngineComponent implements OnInit {
   shifter:any;
   pitch:number;
 
+  envDecay:number;
+  envPitchDecay:number;
+
+
   constructor() { 
 
   }
@@ -31,6 +35,8 @@ export class DrumEngineComponent implements OnInit {
     this.shifter = new Tone.PitchShift(this.pitch).connect(this.crusher);
     this.drumSynth = new Tone.MembraneSynth({oscillator:{type:'square'}}).connect(this.shifter);
     this.BPM=40;
+    this.envDecay=0.4;
+    this.envPitchDecay=0.05;
 
   }
   setup(): void{
@@ -56,6 +62,13 @@ export class DrumEngineComponent implements OnInit {
   
   updatePitch():void{
     this.shifter.pitch=this.pitch;
+  }
+
+  updateEnvelope():void{
+    this.drumSynth.envelope.decay=this.envDecay;
+  }
+  updatePitchEnvelope():void{
+    this.drumSynth.pitchDecay=this.envPitchDecay;
   }
 
 }

@@ -1,3 +1,33 @@
+
+<ion-grid>
+  <h1>DRUM LOOP MODULE v1.0</h1>
+  <ion-row>
+    <ion-col size="12">
+        <ion-button (click)="drumSynth.triggerAttackRelease('C2','8n')">TRIGGER DRUM</ion-button>
+        <ion-button (click)="setup()">START LOOP</ion-button>
+        <ion-button (click)="stopLoop()">STOP LOOP</ion-button>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="12">
+      <ion-label>Loop Speed : {{ this.BPM }} b.p.m.</ion-label>
+      <ion-input (input)="updateBPM()" type="range" min="0" max="240" [(ngModel)]="this.BPM"></ion-input>
+      <ion-label>Amp. Env. Decay : {{ this.envDecay }}s</ion-label>    
+      <ion-input (input)="updateEnvelope()" type="range" step="0.01" min="0.01" max="3" [(ngModel)]="this.envDecay"></ion-input>
+      <ion-label>Pitch Env. Decay : {{ this.envPitchDecay }}s</ion-label>
+      <ion-input (input)="updatePitchEnvelope()" type="range" step="0.01" min="0.01" max="3" [(ngModel)]="this.envPitchDecay"></ion-input>
+      <ion-label>Shift Pitch : {{ this.pitch }} semitones</ion-label>
+      <ion-input (input)="updatePitch()" type="range" min="-12" max="12" [(ngModel)]="this.pitch"></ion-input>
+      <ion-label>Bitrate : {{ this.bitrate }}-Bit</ion-label>
+      <ion-input (input)="updateBit()" type="range" min="1" max="8" [(ngModel)]="this.bitrate"></ion-input>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+
+
+
+
+<!-- 
 <div class="drum-container">
   <h1>DRUM LOOP MODULE v1.0</h1>
   <div class="btn-dash">
@@ -7,10 +37,44 @@
   </div>
   <div class="slider-dash">
     <input class="rot270" (input)="updateBPM()" type="range" min="0" max="240" [(ngModel)]="this.BPM">
-    <b>{{ this.BPM }}</b>
+    <b>{{ this.BPM }} bpm</b>
+    <input class="rot270" (input)="updateEnvelope()" type="range" step="0.01" min="0.01" max="3" [(ngModel)]="this.envDecay">
+    <b>{{ this.envDecay }}s</b>    
+    <input class="rot270" (input)="updatePitchEnvelope()" type="range" step="0.01" min="0.01" max="3" [(ngModel)]="this.envPitchDecay">
+    <b>{{ this.envPitchDecay }}s</b>
     <input class="rot270" (input)="updatePitch()" type="range" min="-12" max="12" [(ngModel)]="this.pitch">
     <b>{{ this.pitch }}-SemiTones</b>
     <input class="rot270" (input)="updateBit()" type="range" min="1" max="8" [(ngModel)]="this.bitrate">
     <b>{{ this.bitrate }}-Bit</b>
   </div>
 </div>
+
+-->
+
+
+
+
+
+
+<!-- 
+    <h1 style="color:#000000;">Drum Loop v 1.1</h1>
+    <form class="list">
+      <ion-toggle toggle-class="toggle-positive">Loop</ion-toggle>
+      <ion-item class="range range-positive">BPM
+        <input type="range" value="50" min="1" max="240" step="1" (input)="updateBPM()" [(ngModel)]="this.BPM" name="bpm">
+      </ion-item>
+      <ion-item class="range range-positive">A.Decay
+        <input type="range" value="0.6" min="0.01" max="2" step="0.01"(input)="updateEnvelope()" [(ngModel)]="this.envDecay" name="envDecay">
+      </ion-item>
+      <ion-item class="range range-positive">P.Decay
+        <input type="range" value="0.6" min="0.01" max="2" step="0.01" (input)="updatePitchEnvelope()" [(ngModel)]="this.envPitchDecay" name="envPitchDecay">
+      </ion-item>
+      <ion-item class="range range-positive">P.Shift
+        <input type="range" value="0" min="-12" max="12" step="1" (input)="updatePitch()" [(ngModel)]="this.pitch" name="pitch">
+      </ion-item>
+      <ion-item class="range range-positive">Bitrate
+        <input type="range" value="8" min="1" max="8" step="2" (input)="updateBit()" [(ngModel)]="this.bitrate" name="bitrate">
+      </ion-item>
+    </form>
+
+    -->
