@@ -1,21 +1,29 @@
 
-<ion-grid>
+<ion-grid class="drum-all">
   <h1>DRUM LOOP MODULE v1.0</h1>
   <ion-row>
     <ion-col size="12">
-        <ion-button (click)="drumSynth.triggerAttackRelease('C2','8n')">TRIGGER DRUM</ion-button>
+        <ion-button (click)="drumSynth.triggerAttackRelease(this.notes[this.noteIndex],time)">TRIGGER DRUM</ion-button>
         <ion-button (click)="setup()">START LOOP</ion-button>
         <ion-button (click)="stopLoop()">STOP LOOP</ion-button>
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col size="12">
-      <ion-label>Loop Speed : {{ this.BPM }} b.p.m.</ion-label>
+      <ion-label>Clock Speed : {{ this.BPM }} b.p.m.</ion-label>
       <ion-input (input)="updateBPM()" type="range" min="0" max="240" [(ngModel)]="this.BPM"></ion-input>
+      
+      <ion-label>Loop Interval : {{ this.loopInterval[this.intervalIndex] }}</ion-label>
+      <ion-input (input)="updateInterval()" type="range" min="0" [max]="this.loopInterval.length-1" [(ngModel)]="this.intervalIndex"></ion-input>
+      <ion-label>Wave Form : {{ this.waveList[this.waveIndex] }}</ion-label>
+      <ion-input (input)="updateWave()" type="range" min="0" [max]="this.waveList.length-1" [(ngModel)]="this.waveIndex"></ion-input>
+      <ion-label>Note : {{ this.notes[this.noteIndex] }}</ion-label>
+      <ion-input (input)="updateNote()" type="range" min="0" [max]="this.notes.length-1" [(ngModel)]="this.noteIndex"></ion-input>
+      
       <ion-label>Amp. Env. Decay : {{ this.envDecay }}s</ion-label>    
-      <ion-input (input)="updateEnvelope()" type="range" step="0.01" min="0.01" max="3" [(ngModel)]="this.envDecay"></ion-input>
+      <ion-input (input)="updateEnvelope()" type="range" step="0.001" min="0.001" max="3" [(ngModel)]="this.envDecay"></ion-input>
       <ion-label>Pitch Env. Decay : {{ this.envPitchDecay }}s</ion-label>
-      <ion-input (input)="updatePitchEnvelope()" type="range" step="0.01" min="0.01" max="3" [(ngModel)]="this.envPitchDecay"></ion-input>
+      <ion-input (input)="updatePitchEnvelope()" type="range" step="0.001" min="0.001" max="3" [(ngModel)]="this.envPitchDecay"></ion-input>
       <ion-label>Shift Pitch : {{ this.pitch }} semitones</ion-label>
       <ion-input (input)="updatePitch()" type="range" min="-12" max="12" [(ngModel)]="this.pitch"></ion-input>
       <ion-label>Bitrate : {{ this.bitrate }}-Bit</ion-label>
