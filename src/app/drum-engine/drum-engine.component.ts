@@ -48,7 +48,7 @@ export class DrumEngineComponent implements OnInit {
     this.BPM=40;
     this.envDecay=0.4;
     this.envPitchDecay=0.05;
-    this.loopInterval=['4m','3m','2m','1m','1n','2n','2t','3n','3t','4n','4t','8n','8t','16n','16t','32n','32t','64n','64t'];
+    this.loopInterval=['1n','2n','2t','3n','3t','4n','4t','8n','8t','16n','16t','32n','32t','64n','64t'];
     this.intervalIndex=5;
     this.noteIndex=0;
     this.populateNotes();
