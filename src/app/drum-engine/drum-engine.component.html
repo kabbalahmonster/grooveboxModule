@@ -56,6 +56,15 @@
           [(ngModel)]="this.waveIndex"
         ></ion-range>
 
+        <ion-label>Arpeggiator : {{ this.arpInterval }}</ion-label>
+        <ion-range
+          snaps
+          ticks  
+          min="-12"
+          max="12"
+          [(ngModel)]="this.arpInterval"
+        ></ion-range>
+
         <ion-label>Note : {{ this.notes[this.noteIndex] }}</ion-label>
         <ion-range
           snaps
