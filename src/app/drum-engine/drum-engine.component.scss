@@ -2,48 +2,10 @@ ion-range{
     --color: 'success';
 }
 
-.rot270{
-    transform: rotate(270deg);
-}
+
 .drum-all{
-    --ion-grid-padding:15%;
-    --margin-top:60px;
+    --ion-grid-padding:5%;
     
-}
-.drum-container{
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content:center;
-    align-items: center;
-    max-width: 100%;
-    height:100%;
-}
-
-.btn-dash{
-    margin:20px;
-    padding:15px;
-}
-button{
-    padding:10px;
-    margin:15px;
-    background-color: blue;
-    border: thick black;
-    border-radius: 15px;
-    color:white;
-}
-
-.slider-dash{
-    margin-top:50px;
-    flex-direction: row;
-
-    justify-content: space-around;
-}
-
-.label-dash{
-    display:block;
-    margin:50px;
-    justify-content: space-around;
 }
 
 .fz-btn{
@@ -52,7 +14,7 @@ button{
     --border-color: black;
     --border-width: 2px;
     --box-shadow: 2px 2px #000000;
-    --transition: 2s;
+    --transition: 0.5s;
     --color:black;
 }
 
