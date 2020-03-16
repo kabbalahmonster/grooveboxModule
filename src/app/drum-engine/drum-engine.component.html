@@ -1,33 +1,43 @@
 
 <ion-grid class="drum-all">
-  <h1>DRUM LOOP MODULE v1.0</h1>
   <ion-row>
     <ion-col size="12">
-        <ion-button (click)="drumSynth.triggerAttackRelease(this.notes[this.noteIndex],time)">TRIGGER DRUM</ion-button>
-        <ion-button (click)="setup()">START LOOP</ion-button>
-        <ion-button (click)="stopLoop()">STOP LOOP</ion-button>
+      <h1>DRUM LOOP MODULE v1.0</h1>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="12">
+        <ion-button class="fz-btn" (click)="drumSynth.triggerAttackRelease(this.notes[this.noteIndex],time)">TRIGGER DRUM</ion-button>
+        <ion-button class="fz-btn" (click)="setup()">START LOOP</ion-button>
+        <ion-button class="fz-btn" (click)="stopLoop()">STOP LOOP</ion-button>
+
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col size="12">
       <ion-label>Clock Speed : {{ this.BPM }} b.p.m.</ion-label>
-      <ion-input (input)="updateBPM()" type="range" min="0" max="240" [(ngModel)]="this.BPM"></ion-input>
+      <ion-range (ionChange)="updateBPM()" type="range" min="0" max="240" [(ngModel)]="this.BPM"></ion-range>
       
       <ion-label>Loop Interval : {{ this.loopInterval[this.intervalIndex] }}</ion-label>
-      <ion-input (input)="updateInterval()" type="range" min="0" [max]="this.loopInterval.length-1" [(ngModel)]="this.intervalIndex"></ion-input>
+      <ion-range snaps ticks (ionChange)="updateInterval()" type="range" min="0" [max]="this.loopInterval.length-1" [(ngModel)]="this.intervalIndex"></ion-range>
+      
       <ion-label>Wave Form : {{ this.waveList[this.waveIndex] }}</ion-label>
-      <ion-input (input)="updateWave()" type="range" min="0" [max]="this.waveList.length-1" [(ngModel)]="this.waveIndex"></ion-input>
+      <ion-range snaps ticks (ionChange)="updateWave()" type="range" min="0" [max]="this.waveList.length-1" [(ngModel)]="this.waveIndex"></ion-range>
+      
       <ion-label>Note : {{ this.notes[this.noteIndex] }}</ion-label>
-      <ion-input (input)="updateNote()" type="range" min="0" [max]="this.notes.length-1" [(ngModel)]="this.noteIndex"></ion-input>
+      <ion-range snaps ticks (ionChange)="updateNote()" type="range" min="0" [max]="this.notes.length-1" [(ngModel)]="this.noteIndex"></ion-range>
       
       <ion-label>Amp. Env. Decay : {{ this.envDecay }}s</ion-label>    
-      <ion-input (input)="updateEnvelope()" type="range" step="0.001" min="0.001" max="3" [(ngModel)]="this.envDecay"></ion-input>
+      <ion-range snaps ticks (ionChange)="updateEnvelope()" type="range" step="0.001" min="0.001" max="3" [(ngModel)]="this.envDecay"></ion-range>
+      
       <ion-label>Pitch Env. Decay : {{ this.envPitchDecay }}s</ion-label>
-      <ion-input (input)="updatePitchEnvelope()" type="range" step="0.001" min="0.001" max="3" [(ngModel)]="this.envPitchDecay"></ion-input>
+      <ion-range snaps ticks (ionChange)="updatePitchEnvelope()" type="range" step="0.001" min="0.001" max="3" [(ngModel)]="this.envPitchDecay"></ion-range>
+      
       <ion-label>Shift Pitch : {{ this.pitch }} semitones</ion-label>
-      <ion-input (input)="updatePitch()" type="range" min="-12" max="12" [(ngModel)]="this.pitch"></ion-input>
+      <ion-range snaps ticks (ionChange)="updatePitch()" type="range" min="-12" max="12" [(ngModel)]="this.pitch"></ion-range>
+      
       <ion-label>Bitrate : {{ this.bitrate }}-Bit</ion-label>
-      <ion-input (input)="updateBit()" type="range" min="1" max="8" [(ngModel)]="this.bitrate"></ion-input>
+      <ion-range snaps ticks (ionChange)="updateBit()" type="range" min="1" max="8" [(ngModel)]="this.bitrate"></ion-range>
     </ion-col>
   </ion-row>
 </ion-grid>

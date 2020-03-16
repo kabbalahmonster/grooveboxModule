@@ -1,7 +1,7 @@
 #container {
   text-align: center;
 
-  position: absolute;
+  position: relative;
   left: 0;
   right: 0;
   top: 50%;
@@ -27,9 +27,5 @@
 }
 
 ion-content ion-toolbar {
-  --background: translucent;
-}
-
-app-drum-engine{
-  margin-top:100px;
+  --background-color: #ff8fe9;
 }

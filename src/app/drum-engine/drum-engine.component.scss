@@ -1,9 +1,14 @@
+ion-range{
+    --color: 'success';
+}
+
 .rot270{
     transform: rotate(270deg);
 }
 .drum-all{
-
-    margin-top:60px;
+    --ion-grid-padding:15%;
+    --margin-top:60px;
+    
 }
 .drum-container{
     display: flex;
@@ -39,4 +44,19 @@ button{
     display:block;
     margin:50px;
     justify-content: space-around;
+}
+
+.fz-btn{
+    --border-radius: 50px;
+    --border-style:solid;
+    --border-color: black;
+    --border-width: 2px;
+    --box-shadow: 2px 2px #000000;
+    --transition: 2s;
+    --color:black;
+}
+
+.fz-btn:hover{
+    transform: scale(1.1);
+    z-index: +10;
 }
