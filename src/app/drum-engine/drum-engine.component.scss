@@ -4,7 +4,15 @@ ion-range{
 
 
 .drum-all{
-    --ion-grid-padding:5%;
+    --ion-grid-width:80%;
+    max-width: 80%;
+    
+}
+.drum-bar{
+   --padding-start: 5%;
+   --padding-end: 5%;
+}
+.drum-title{
     
 }
 
