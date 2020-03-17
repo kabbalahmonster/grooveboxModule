@@ -9,13 +9,15 @@ import * as Tone from 'tone';
 })
 export class DrumEngineComponent implements OnInit {
   // declare variables
-  effectsHidden:boolean;
-  activeView:number;
+  effectsHidden: boolean;
+  activeView: number;
   Tone: any;
   drumSynth: any;
 
   loopBeat: any;
   BPM: number;
+
+  looping:boolean;
 
   crusher: any;
   bitrate: number;
@@ -35,19 +37,20 @@ export class DrumEngineComponent implements OnInit {
   notes: string[];
   noteIndex: number;
 
-  arpInterval:number;
+  arpInterval: number;
 
   bitCrusherToggle: boolean;
   pitchShifterToggle: boolean;
 
-  constructor() { }
+  constructor() {}
   ngOnInit() {
     // initialize variables
-    this.effectsHidden=true;
-    this.activeView=0;
+    this.effectsHidden = true;
+    this.activeView = 0;
     this.bitrate = 4;
     this.pitch = 0;
-    this.arpInterval=0;
+    this.arpInterval = 0;
+    this.looping=false;
 
     this.waveList = [
       'fmsine',
@@ -101,11 +104,11 @@ export class DrumEngineComponent implements OnInit {
 
     this.loopBeat = new Tone.Loop(time => {
       this.drumSynth.triggerAttackRelease(this.notes[this.noteIndex], time);
-      this.noteIndex+=this.arpInterval;
-      if(this.noteIndex>=this.notes.length){
-        this.noteIndex-=this.notes.length;
-      }else if(this.noteIndex<0){        
-        this.noteIndex+=this.notes.length;
+      this.noteIndex += this.arpInterval;
+      if (this.noteIndex >= this.notes.length) {
+        this.noteIndex -= this.notes.length;
+      } else if (this.noteIndex < 0) {
+        this.noteIndex += this.notes.length;
       }
     }, this.loopInterval[this.intervalIndex]);
     this.loopBeat.start(0);

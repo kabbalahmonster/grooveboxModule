@@ -9,8 +9,8 @@
       (click)="drumSynth.triggerAttackRelease(this.notes[this.noteIndex], time)"
       >TRIGGER DRUM</ion-button
     >
-    <ion-button color="light" class="fz-btn" (click)="setup()">START LOOP</ion-button>
-    <ion-button color="light" class="fz-btn" (click)="stopLoop()">STOP LOOP</ion-button>
+    <ion-button [disabled]="this.looping" color="light" class="fz-btn" (click)="setup()">START LOOP</ion-button>
+    <ion-button [disabled]="!this.looping" color="light" class="fz-btn" (click)="stopLoop()">STOP LOOP</ion-button>
     <ion-button color="light" class="fz-btn" (click)="this.activeView = 0">Drum</ion-button>
     <ion-button color="light" class="fz-btn" (click)="this.activeView = 1"
       >Effects</ion-button
