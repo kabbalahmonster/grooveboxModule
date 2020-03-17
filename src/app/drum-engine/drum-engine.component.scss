@@ -2,7 +2,9 @@ ion-range{
     --color: 'success';
 }
 
-
+ion-split-pane{
+    --side-max-width: 250px;
+}
 .drum-all{
     --ion-grid-width:80%;
     max-width: 80%;
@@ -29,4 +31,17 @@ ion-range{
 .fz-btn:hover{
     transform: scale(1.1);
     z-index: +10;
+}
+
+.activeBtn{
+    transform: scale(1.5);
+    margin-left: 10%;
+}
+
+.addMargin{
+    margin-left:10%;
+}
+
+.animateDelay{
+    transform:1s;
 }

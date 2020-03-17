@@ -10,7 +10,7 @@ import * as Tone from 'tone';
 export class DrumEngineComponent implements OnInit {
   // declare variables
 
-  _viewDefault:string = "Core";
+  _viewDefault:string = "Drum";
   selectedView:string;
 
   effectsHidden: boolean;
