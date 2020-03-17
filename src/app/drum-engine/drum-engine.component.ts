@@ -9,6 +9,10 @@ import * as Tone from 'tone';
 })
 export class DrumEngineComponent implements OnInit {
   // declare variables
+
+  _viewDefault:string = "Core";
+  selectedView:string;
+
   effectsHidden: boolean;
   activeView: number;
   Tone: any;
@@ -51,6 +55,8 @@ export class DrumEngineComponent implements OnInit {
     this.pitch = 0;
     this.arpInterval = 0;
     this.looping=false;
+
+    this.selectedView = this._viewDefault;
 
     this.waveList = [
       'fmsine',
@@ -112,10 +118,12 @@ export class DrumEngineComponent implements OnInit {
       }
     }, this.loopInterval[this.intervalIndex]);
     this.loopBeat.start(0);
+    this.looping=true;
   }
 
   stopLoop(): void {
     this.loopBeat.stop(0);
+    this.looping=false;
   }
 
   updateBPM(): void {

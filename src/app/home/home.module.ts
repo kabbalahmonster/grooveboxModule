@@ -21,4 +21,6 @@ import { HomePage } from './home.page';
   ],
   declarations: [HomePage, DrumEngineComponent]
 })
-export class HomePageModule {}
+export class HomePageModule {
+
+}
