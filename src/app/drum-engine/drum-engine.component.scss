@@ -1,50 +1,46 @@
-ion-range{
-    --color: 'success';
+ion-range {
+  --color: "success";
 }
 
-ion-split-pane{
-    --side-max-width: 250px;
+ion-split-pane {
+  --side-max-width: 250px;
 }
-ion-label{
-    z-index: 10;
+ion-label {
+  z-index: 10;
 }
-.drum-all{
-    --ion-grid-width:80%;
-    max-width: 80%;
-    
+.drum-all {
+  --ion-grid-width: 80%;
+  max-width: 80%;
 }
-.drum-bar{
-   --padding-start: 5%;
-   --padding-end: 5%;
-}
-.drum-title{
-    
+.drum-bar {
+  --padding-start: 5%;
+  --padding-end: 5%;
 }
 
-.fz-btn{
-    --border-radius: 50px;
-    --border-style:solid;
-    --border-color: black;
-    --border-width: 2px;
-    --box-shadow: 2px 2px #000000;
-    --transition: 0.5s;
-    --color:black;
-    margin-left: 5px;
+.fz-btn {
+  --border-radius: 50px;
+  --border-style: solid;
+  --border-color: black;
+  --border-width: 2px;
+  --box-shadow: 2px 2px #000000;
+  --transition: 0.5s;
+  --color: black;
+  margin-left: 5px;
 }
 
-.fz-btn:hover{
-    transform: scale(1.1);
-    z-index: +10;
+.fz-btn:hover {
+  transform: scale(1.1);
+  z-index: +10;
 }
-.activeBtn{
-    transform: scale(1.5);
-    margin-left: 10%;
-}
-
-.addMargin{
-    margin-left:10%;
+.activeBtn {
+  transform: scale(1.5);
+  margin-left: 10%;
 }
 
-.animateDelay{
-    transform:1s;
+.addMargin {
+  margin-left: 10%;
+}
+
+.animateDelay {
+  transform: 1s;
 }

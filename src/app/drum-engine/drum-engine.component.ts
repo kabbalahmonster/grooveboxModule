@@ -9,6 +9,7 @@ import * as Tone from 'tone';
 })
 export class DrumEngineComponent implements OnInit {
   // declare variables
+  chainList: AudioNode[];
 
   VIEW_DEFAULT = 'Drum';
   selectedView: string;
@@ -20,17 +21,20 @@ export class DrumEngineComponent implements OnInit {
 
   loopBeat: any;
   BPM: number;
+  trSwing: number;
 
   looping: boolean;
 
   crusher: any;
   bitrate: number;
+  bcWetness:number;
 
   shifter: any;
   pitch: number;
   psWindowSize: number;
-  psDelayTime:number;
-  psFeedback:number;
+  psDelayTime: number;
+  psFeedback: number;
+  psWetness: number;
 
   envDecay: number;
   envPitchDecay: number;
@@ -55,9 +59,11 @@ export class DrumEngineComponent implements OnInit {
     this.effectsHidden = true;
     this.activeView = 0;
     this.bitrate = 4;
+    this.bcWetness=0.5;
     this.pitch = 0;
-    this.psDelayTime=0;
-    this.psFeedback=0;
+    this.psDelayTime = 0;
+    this.psFeedback = 0;
+    this.psWetness = 0.5;
     this.arpInterval = 0;
     this.looping = false;
 
@@ -78,13 +84,14 @@ export class DrumEngineComponent implements OnInit {
       'fattriangle',
       'pwm'
     ];
-    this.waveIndex = 0;
+    this.waveIndex = this.waveList.length - 1;
     this.drumSynth = new Tone.MembraneSynth({
       oscillator: { type: this.waveList[this.waveIndex] }
-    }).toMaster();
-    this.BPM = 40;
-    this.envDecay = 0.4;
-    this.envPitchDecay = 0.05;
+    });
+    this.BPM = 120;
+    this.trSwing = 0;
+    this.envDecay = 0.8;
+    this.envPitchDecay = 0.2;
     this.loopInterval = [
       '1n',
       '2n',
@@ -108,6 +115,11 @@ export class DrumEngineComponent implements OnInit {
     this.bitCrusherToggle = false;
     this.pitchShifterToggle = false;
     this.psWindowSize = 0.1;
+
+    this.shifter = new Tone.PitchShift(this.pitch);
+    this.crusher = new Tone.BitCrusher(this.bitrate);
+
+    this.updateChain();
   }
   setup(): void {
     this.updateBPM();
@@ -140,11 +152,19 @@ export class DrumEngineComponent implements OnInit {
   updateBPM(): void {
     Tone.Transport.bpm.value = this.BPM;
   }
-
+  updateTrSwing(): void {
+    Tone.Transport.swing = this.trSwing;
+  }
+  //------------------ bit crusher parameters
   updateBit(): void {
     this.crusher.bits = this.bitrate;
   }
-  // ----------------- pitch shifter parameter
+
+  updateBcWetness() {
+    this.crusher.wet.value = this.bcWetness;
+  }
+
+  // ----------------- pitch shifter parameters
   // pitch
   updatePitch(): void {
     this.shifter.pitch = this.pitch;
@@ -155,12 +175,16 @@ export class DrumEngineComponent implements OnInit {
   }
 
   // delay time
-  updatePsDelayTime(){
+  updatePsDelayTime() {
     this.shifter.delayTime.value = this.psDelayTime;
   } // feedback
-  updatePsFeedback(){
+  updatePsFeedback() {
     this.shifter.feedback.value = this.psFeedback;
   }
+  updatePsWetness() {
+    this.shifter.wet.value = this.psWetness;
+  }
+
   // ----------------------
 
   updateEnvelope(): void {
@@ -197,43 +221,32 @@ export class DrumEngineComponent implements OnInit {
     this.drumSynth.oscillator.frequency.value = this.notes[this.noteIndex];
   }
 
-  // connect bitcrusher
-  updateBitCrusherToggle() {
-    if (this.bitCrusherToggle) {
-      this.crusher = new Tone.BitCrusher(this.bitrate);
-      if (this.pitchShifterToggle) {
-        this.shifter.connect(this.crusher);
-      } else {
-        this.drumSynth.connect(this.crusher);
-      }
-      this.crusher.toMaster();
-    } else {
-      if (this.pitchShifterToggle) {
-        this.shifter.toMaster();
-      } else {
-        this.drumSynth.toMaster();
-      }
-      this.crusher.dispose();
-    }
-  }
-  // connect pitch shifter
-  updatePitchShifterToggle() {
-    if (this.pitchShifterToggle) {
-      this.shifter = new Tone.PitchShift(this.pitch);
+  // check for enabled modules and construct signal chain
+  updateChain() {
+    this.drumSynth.disconnect(0);
+    // construct chain route array, beginning with source
+    this.chainList = [this.drumSynth];
 
-      this.drumSynth.connect(this.shifter);
-      if (this.bitCrusherToggle) {
-        this.shifter.connect(this.crusher);
-      } else {
-        this.shifter.toMaster();
-      }
+    // add pitch shifter?
+    if (this.pitchShifterToggle) {
+      this.chainList.push(this.shifter);
     } else {
-      if (this.bitCrusherToggle) {
-        this.drumSynth.connect(this.crusher);
-      } else {
-        this.drumSynth.toMaster();
-      }
-      this.shifter.dispose();
+      this.shifter.disconnect(0);
+    }
+    // add bitcrusher?
+    if (this.bitCrusherToggle) {
+      this.chainList.push(this.crusher);
+    } else {
+      this.crusher.disconnect(0);
+    }
+    // add master
+    this.chainList.push(Tone.Master);
+    console.log('inside updateChain : ' + this.chainList.length);
+
+    // connect
+    for (let i = 1; i < this.chainList.length; i++) {
+      console.log('value of i : ' + i);
+      this.chainList[i - 1].connect(this.chainList[i]);
     }
   }
 }

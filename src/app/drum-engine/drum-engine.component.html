@@ -81,6 +81,19 @@
               [(ngModel)]="this.BPM"
             ></ion-range>
           </ion-item>
+          <!---
+          <ion-item>
+            <ion-label position="stacked">Swing : {{ this.trSwing }}</ion-label>
+            <ion-range
+              (ionChange)="updateTrSwing()"
+              type="range"
+              min="0"
+              max="1"
+              step="0.0001"
+              [(ngModel)]="this.trSwing"
+            ></ion-range>
+          </ion-item>
+        -->
         </ion-col>
       </ion-row>
       <!------CORE ENDS ---------------------------------------------------------------------------->
@@ -224,7 +237,7 @@
               <ion-item>
                 <ion-label><b>Pitch Shifter</b></ion-label>
                 <ion-toggle
-                  (ionChange)="updatePitchShifterToggle()"
+                  (ionChange)="updateChain()"
                   [(ngModel)]="this.pitchShifterToggle"
                 ></ion-toggle>
               </ion-item>
@@ -251,7 +264,7 @@
                       (ionChange)="updateWindowSize()"
                       type="range"
                       min="0.001"
-                      max="2"
+                      max="3"
                       step="0.001"
                       [(ngModel)]="this.psWindowSize"
                     ></ion-range>
@@ -277,8 +290,19 @@
                       type="range"
                       min="0"
                       max="0.75"
-                      step="0.001"
+                      step="0.0001"
                       [(ngModel)]="this.psFeedback"
+                    ></ion-range>
+                  </ion-item><ion-item>
+                    <ion-label position="stacked">Wetness : {{ this.psWetness }}</ion-label>
+                    <ion-range
+                      [disabled]="!this.pitchShifterToggle"
+                      (ionChange)="updatePsWetness()"
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.0001"
+                      [(ngModel)]="this.psWetness"
                     ></ion-range>
                   </ion-item>
                 </ion-col>
@@ -290,7 +314,7 @@
               <ion-item>
                 <ion-label><b>Bit Crusher</b></ion-label>
                 <ion-toggle
-                  (ionChange)="updateBitCrusherToggle()"
+                  (ionChange)="updateChain()"
                   [(ngModel)]="this.bitCrusherToggle"
                 ></ion-toggle>
               </ion-item>
@@ -307,6 +331,18 @@
                       min="1"
                       max="8"
                       [(ngModel)]="this.bitrate"
+                    ></ion-range>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="stacked">Wetness : {{ this.bcWetness }}</ion-label>
+                    <ion-range
+                      [disabled]="!this.bitCrusherToggle"
+                      (ionChange)="updateBcWetness()"
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.0001"
+                      [(ngModel)]="this.bcWetness"
                     ></ion-range>
                   </ion-item>
                 </ion-col>
