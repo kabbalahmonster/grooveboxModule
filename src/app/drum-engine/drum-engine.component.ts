@@ -10,8 +10,8 @@ import * as Tone from 'tone';
 export class DrumEngineComponent implements OnInit {
   // declare variables
 
-  _viewDefault:string = "Drum";
-  selectedView:string;
+  VIEW_DEFAULT = 'Drum';
+  selectedView: string;
 
   effectsHidden: boolean;
   activeView: number;
@@ -21,13 +21,16 @@ export class DrumEngineComponent implements OnInit {
   loopBeat: any;
   BPM: number;
 
-  looping:boolean;
+  looping: boolean;
 
   crusher: any;
   bitrate: number;
 
   shifter: any;
   pitch: number;
+  psWindowSize: number;
+  psDelayTime:number;
+  psFeedback:number;
 
   envDecay: number;
   envPitchDecay: number;
@@ -53,10 +56,12 @@ export class DrumEngineComponent implements OnInit {
     this.activeView = 0;
     this.bitrate = 4;
     this.pitch = 0;
+    this.psDelayTime=0;
+    this.psFeedback=0;
     this.arpInterval = 0;
-    this.looping=false;
+    this.looping = false;
 
-    this.selectedView = this._viewDefault;
+    this.selectedView = this.VIEW_DEFAULT;
 
     this.waveList = [
       'fmsine',
@@ -102,6 +107,7 @@ export class DrumEngineComponent implements OnInit {
     this.populateNotes();
     this.bitCrusherToggle = false;
     this.pitchShifterToggle = false;
+    this.psWindowSize = 0.1;
   }
   setup(): void {
     this.updateBPM();
@@ -118,12 +124,17 @@ export class DrumEngineComponent implements OnInit {
       }
     }, this.loopInterval[this.intervalIndex]);
     this.loopBeat.start(0);
-    this.looping=true;
   }
 
   stopLoop(): void {
     this.loopBeat.stop(0);
-    this.looping=false;
+  }
+  updateLooping() {
+    if (this.looping) {
+      this.setup();
+    } else {
+      this.stopLoop();
+    }
   }
 
   updateBPM(): void {
@@ -133,10 +144,24 @@ export class DrumEngineComponent implements OnInit {
   updateBit(): void {
     this.crusher.bits = this.bitrate;
   }
-
+  // ----------------- pitch shifter parameter
+  // pitch
   updatePitch(): void {
     this.shifter.pitch = this.pitch;
   }
+  // window size
+  updateWindowSize() {
+    this.shifter.windowSize = this.psWindowSize;
+  }
+
+  // delay time
+  updatePsDelayTime(){
+    this.shifter.delayTime.value = this.psDelayTime;
+  } // feedback
+  updatePsFeedback(){
+    this.shifter.feedback.value = this.psFeedback;
+  }
+  // ----------------------
 
   updateEnvelope(): void {
     this.drumSynth.envelope.decay = this.envDecay;

@@ -67,18 +67,20 @@
     >
     <!------------------------------------------------------------------------------------------->
 
-    <ion-grid class="drum-all">
+    <ion-grid class="">
       <!-----  CORE BEGINS   -------------------------------------------------------------------------->
       <ion-row class="animateDelay" [hidden]="this.selectedView != 'Core'">
         <ion-col size="12">
-          <ion-label>Clock Speed : {{ this.BPM }} b.p.m.</ion-label>
-          <ion-range
-            (ionChange)="updateBPM()"
-            type="range"
-            min="0"
-            max="240"
-            [(ngModel)]="this.BPM"
-          ></ion-range>
+          <ion-item>
+            <ion-label position="stacked">Clock Speed : {{ this.BPM }} b.p.m.</ion-label>
+            <ion-range
+              (ionChange)="updateBPM()"
+              type="range"
+              min="0"
+              max="240"
+              [(ngModel)]="this.BPM"
+            ></ion-range>
+          </ion-item>
         </ion-col>
       </ion-row>
       <!------CORE ENDS ---------------------------------------------------------------------------->
@@ -88,6 +90,7 @@
         <ion-col size="12">
           <ion-row>
             <ion-col size="12">
+              <ion-item>
               <ion-button
                 color="light"
                 class="fz-btn"
@@ -99,99 +102,114 @@
                 "
                 >TRIGGER DRUM</ion-button
               >
-              <ion-button
-                [disabled]="this.looping"
-                color="light"
-                class="fz-btn"
-                (click)="setup()"
-                >START LOOP</ion-button
-              >
-              <ion-button
-                [disabled]="!this.looping"
-                color="light"
-                class="fz-btn"
-                (click)="stopLoop()"
-                >STOP LOOP</ion-button
-              >
+            </ion-item>
             </ion-col>
           </ion-row>
 
           <ion-row>
             <ion-col>
-              <ion-row class="animateDelay" [hidden]="!this.looping">
+              <ion-item>
+                <ion-label><b>Voice</b></ion-label>
+              </ion-item>
+              <ion-row>
                 <ion-col size="12">
-                  <ion-label
-                    >Loop Interval :
-                    {{ this.loopInterval[this.intervalIndex] }}</ion-label
-                  >
-                  <ion-range
-                    [disabled]="!this.looping"
-                    snaps
-                    ticks
-                    (ionChange)="updateInterval()"
-                    type="range"
-                    min="0"
-                    [max]="this.loopInterval.length - 1"
-                    [(ngModel)]="this.intervalIndex"
-                  ></ion-range>
-
-                  <ion-label>Arpeggiator : {{ this.arpInterval }}</ion-label>
-                  <ion-range
-                    [disabled]="!this.looping"
-                    snaps
-                    ticks
-                    min="-12"
-                    max="12"
-                    [(ngModel)]="this.arpInterval"
-                  ></ion-range>
+                  <ion-item>
+                    <ion-label  position="stacked"
+                      >Note : {{ this.notes[this.noteIndex] }}</ion-label
+                    >
+                    <ion-range
+                      snaps
+                      ticks
+                      (ionChange)="updateNote()"
+                      type="range"
+                      min="0"
+                      [max]="this.notes.length - 1"
+                      [(ngModel)]="this.noteIndex"
+                    ></ion-range>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="stacked"
+                      >Wave Form :
+                      {{ this.waveList[this.waveIndex] }}</ion-label
+                    >
+                    <ion-range
+                      snaps
+                      ticks
+                      (ionChange)="updateWave()"
+                      type="range"
+                      min="0"
+                      [max]="this.waveList.length - 1"
+                      [(ngModel)]="this.waveIndex"
+                    ></ion-range>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="stacked"
+                      >Amp. Env. Decay : {{ this.envDecay }}s</ion-label
+                    >
+                    <ion-range
+                      (ionChange)="updateEnvelope()"
+                      type="range"
+                      step="0.001"
+                      min="0.001"
+                      max="5"
+                      [(ngModel)]="this.envDecay"
+                    ></ion-range>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="stacked"
+                      >Pitch Env. Decay : {{ this.envPitchDecay }}s</ion-label
+                    >
+                    <ion-range
+                      (ionChange)="updatePitchEnvelope()"
+                      type="range"
+                      step="0.001"
+                      min="0.001"
+                      max="5"
+                      [(ngModel)]="this.envPitchDecay"
+                    ></ion-range>
+                  </ion-item>
                 </ion-col>
               </ion-row>
+            </ion-col>
+          </ion-row>
+          <ion-row class="animateDelay">
+            <ion-col size="12">
+              <ion-item>
+                <ion-label><b>Loop</b></ion-label>
+                <ion-toggle (ionChange)="this.updateLooping()" [(ngModel)]="this.looping"></ion-toggle>
+              </ion-item>
+              <ion-row [hidden]="!this.looping">
+                <ion-col size="12">
+                  <ion-item>
+                    <ion-label position="stacked"
+                      >Interval :
+                      {{ this.loopInterval[this.intervalIndex] }}</ion-label
+                    >
+                    <ion-range
+                      [disabled]="!this.looping"
+                      snaps
+                      ticks
+                      (ionChange)="updateInterval()"
+                      type="range"
+                      min="0"
+                      [max]="this.loopInterval.length - 1"
+                      [(ngModel)]="this.intervalIndex"
+                    ></ion-range>
+                  </ion-item>
 
-              <ion-label>Note : {{ this.notes[this.noteIndex] }}</ion-label>
-              <ion-range
-                snaps
-                ticks
-                (ionChange)="updateNote()"
-                type="range"
-                min="0"
-                [max]="this.notes.length - 1"
-                [(ngModel)]="this.noteIndex"
-              ></ion-range>
-
-              <ion-label
-                >Wave Form : {{ this.waveList[this.waveIndex] }}</ion-label
-              >
-              <ion-range
-                snaps
-                ticks
-                (ionChange)="updateWave()"
-                type="range"
-                min="0"
-                [max]="this.waveList.length - 1"
-                [(ngModel)]="this.waveIndex"
-              ></ion-range>
-
-              <ion-label>Amp. Env. Decay : {{ this.envDecay }}s</ion-label>
-              <ion-range
-                (ionChange)="updateEnvelope()"
-                type="range"
-                step="0.001"
-                min="0.001"
-                max="5"
-                [(ngModel)]="this.envDecay"
-              ></ion-range>
-
-              <ion-label
-                >Pitch Env. Decay : {{ this.envPitchDecay }}s</ion-label
-              >
-              <ion-range
-                (ionChange)="updatePitchEnvelope()"
-                type="range"
-                step="0.001"
-                min="0.001"
-                max="5"
-                [(ngModel)]="this.envPitchDecay"
-              ></ion-range>
+                  <ion-item>
+                    <ion-label position="stacked">Arpeggiator : {{ this.arpInterval }}</ion-label>
+                    <ion-range
+                      [disabled]="!this.looping"
+                      snaps
+                      ticks
+                      min="-12"
+                      max="12"
+                      [(ngModel)]="this.arpInterval"
+                    ></ion-range>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
             </ion-col>
           </ion-row>
         </ion-col>
@@ -201,39 +219,100 @@
       <!-----  EFFECTS BEGINS ----------------------------------------------------------------------->
       <ion-row class="animateDelay" [hidden]="this.selectedView != 'Effects'">
         <ion-col>
-          <ion-toggle
-            (ionChange)="updatePitchShifterToggle()"
-            [(ngModel)]="this.pitchShifterToggle"
-          ></ion-toggle>
+          <ion-row>
+            <ion-col size="12">
+              <ion-item>
+                <ion-label><b>Pitch Shifter</b></ion-label>
+                <ion-toggle
+                  (ionChange)="updatePitchShifterToggle()"
+                  [(ngModel)]="this.pitchShifterToggle"
+                ></ion-toggle>
+              </ion-item>
+              <ion-row [hidden]="!this.pitchShifterToggle">
+                <ion-col size="12">
+                  <ion-item>
+                    <ion-label position="stacked">Pitch : {{ this.pitch }} semitones</ion-label>
+                    <ion-range
+                      [disabled]="!this.pitchShifterToggle"
+                      snaps
+                      ticks
+                      (ionChange)="updatePitch()"
+                      type="range"
+                      min="-36"
+                      max="36"
+                      [(ngModel)]="this.pitch"
+                    ></ion-range>
+                  </ion-item>
 
-          <ion-label>Pitch Shifter : {{ this.pitch }} semitones</ion-label>
-          <ion-range
-            [disabled]="!this.pitchShifterToggle"
-            snaps
-            ticks
-            (ionChange)="updatePitch()"
-            type="range"
-            min="-12"
-            max="12"
-            [(ngModel)]="this.pitch"
-          ></ion-range>
+                  <ion-item>
+                    <ion-label position="stacked">Sample Size : {{ this.psWindowSize }}</ion-label>
+                    <ion-range
+                      [disabled]="!this.pitchShifterToggle"
+                      (ionChange)="updateWindowSize()"
+                      type="range"
+                      min="0.001"
+                      max="2"
+                      step="0.001"
+                      [(ngModel)]="this.psWindowSize"
+                    ></ion-range>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="stacked">Delay Time : {{ this.psDelayTime }}s</ion-label>
+                    <ion-range
+                      [disabled]="!this.pitchShifterToggle"
+                      (ionChange)="updatePsDelayTime()"
+                      type="range"
+                      min="0"
+                      max="3"
+                      step="0.001"
+                      [(ngModel)]="this.psDelayTime"
+                    ></ion-range>
+                  </ion-item>
 
-          <ion-toggle
-            (ionChange)="updateBitCrusherToggle()"
-            [(ngModel)]="this.bitCrusherToggle"
-          ></ion-toggle>
-
-          <ion-label>Bit Crusher : {{ this.bitrate }}-Bit</ion-label>
-          <ion-range
-            [disabled]="!this.bitCrusherToggle"
-            snaps
-            ticks
-            (ionChange)="updateBit()"
-            type="range"
-            min="1"
-            max="8"
-            [(ngModel)]="this.bitrate"
-          ></ion-range>
+                  <ion-item>
+                    <ion-label position="stacked">Feedback : {{ this.psFeedback }}</ion-label>
+                    <ion-range
+                      [disabled]="!this.pitchShifterToggle"
+                      (ionChange)="updatePsFeedback()"
+                      type="range"
+                      min="0"
+                      max="0.75"
+                      step="0.001"
+                      [(ngModel)]="this.psFeedback"
+                    ></ion-range>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="12">
+              <ion-item>
+                <ion-label><b>Bit Crusher</b></ion-label>
+                <ion-toggle
+                  (ionChange)="updateBitCrusherToggle()"
+                  [(ngModel)]="this.bitCrusherToggle"
+                ></ion-toggle>
+              </ion-item>
+              <ion-row [hidden]="!this.bitCrusherToggle">
+                <ion-col size="12">
+                  <ion-item>
+                    <ion-label position="stacked">Bitrate : {{ this.bitrate }}-Bit</ion-label>
+                    <ion-range
+                      [disabled]="!this.bitCrusherToggle"
+                      snaps
+                      ticks
+                      (ionChange)="updateBit()"
+                      type="range"
+                      min="1"
+                      max="8"
+                      [(ngModel)]="this.bitrate"
+                    ></ion-range>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
         </ion-col>
       </ion-row>
       <!-----      EFFECTS ENDS    ----------------------------------------------------------------->
