@@ -46,7 +46,7 @@ ion-label {
 }
 
 #myOscilloscope{
-  height: 32px;
+  height: 40px;
   width:100%;
   margin-right:15px;
   border-radius:5px;
@@ -54,4 +54,9 @@ ion-label {
   display: flex;
   transform: rotate(180deg);
   transition: 0.5s;
+  
+}
+
+.pageTitle{
+  padding:3px;
 }

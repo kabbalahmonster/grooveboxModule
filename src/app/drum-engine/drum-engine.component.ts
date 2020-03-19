@@ -12,6 +12,7 @@ export class DrumEngineComponent implements OnInit {
   // declare variables
   chainList: AudioNode[];
 
+  // oscilloscope variables
   myOscilloscope: any;
   myOscCtx: any;
   myOscLen: number;
@@ -22,6 +23,7 @@ export class DrumEngineComponent implements OnInit {
   myOscResolutionsIndex:number;
   myOscVisible:boolean;
   myOscSmoothing:number;
+  myOscOffsetScope:boolean;
 
   analyser: Tone.Analyser;
 
@@ -83,11 +85,12 @@ export class DrumEngineComponent implements OnInit {
 
     this.selectedView = this.VIEW_DEFAULT;
 
-    this.myOscResolutions = [2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384];
-    this.myOscResolutionsIndex = 7;
+    this.myOscResolutions = [16,32,64,128,256,512,1024,2048,4096,8192,16384];
+    this.myOscResolutionsIndex = this.myOscResolutions.length -1;
     this.myOscVisible=true;
     this.myOscSmoothing=1;
     this.myOscResolution=this.myOscResolutions[this.myOscResolutionsIndex];
+    this.myOscOffsetScope = true;
 
     this.waveList = [
       "fmsine",
@@ -110,8 +113,8 @@ export class DrumEngineComponent implements OnInit {
     });
     this.BPM = 120;
     this.trSwing = 0;
-    this.envDecay = 0.8;
-    this.envPitchDecay = 0.2;
+    this.envDecay = 1.5;
+    this.envPitchDecay = 1;
     this.loopInterval = [
       "1n",
       "2n",
@@ -129,7 +132,7 @@ export class DrumEngineComponent implements OnInit {
       "64n",
       "64t"
     ];
-    this.intervalIndex = 5;
+    this.intervalIndex = 6;
     this.noteIndex = 0;
     this.populateNotes();
     this.bitCrusherToggle = false;
@@ -149,7 +152,7 @@ export class DrumEngineComponent implements OnInit {
     this.myOscLen = this.analyser.getValue().length;
     this.updateChain();
 
-    this.myOscIntervalNew = 175;
+    this.myOscIntervalNew = 1;
     this.myOscInterval = setInterval(() => {
       this.draw();
     }, this.myOscIntervalNew);
@@ -317,7 +320,7 @@ export class DrumEngineComponent implements OnInit {
   // ---------------- OSCILLOSCOPE--------------------------------------------------------------------
   draw() {
     //let drawOsc = requestAnimationFrame(draw);
-    console.log("DRAWING IN");
+    //console.log("DRAWING IN");
     this.myOscCtx.clearRect(
       0,
       0,
@@ -325,15 +328,23 @@ export class DrumEngineComponent implements OnInit {
       this.myOscilloscope.height
     );
     let dataArray = this.analyser.getValue();
-    console.log(dataArray);
+    //console.log(dataArray);
     this.myOscCtx.lineWidth = 2;
     this.myOscCtx.strokeStyle = "rgb(0,0,0)";
     this.myOscCtx.beginPath();
     this.myOscLen=dataArray.length;
     let sliceWidth = this.myOscilloscope.width / (this.myOscLen-1);
     let x = 0;
+    let y:number;
+    let scopeOffset = this.myOscilloscope.height/2;
     for (let i = 0; i < this.myOscLen; i++) {
-      let y = dataArray[i] * this.myOscilloscope.height;
+
+      if(this.myOscOffsetScope){
+
+        y = (dataArray[i] * (scopeOffset))+(scopeOffset);
+      }else{
+        y=dataArray[i] * this.myOscilloscope.height;
+      }
 
       if (i == 0) {
         this.myOscCtx.moveTo(x, y);
@@ -344,6 +355,6 @@ export class DrumEngineComponent implements OnInit {
     }
     this.myOscCtx.stroke();
 
-    console.log("DRAWING OUT");
+    //console.log("DRAWING OUT");
   }
 }
