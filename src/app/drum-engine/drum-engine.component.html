@@ -1,4 +1,5 @@
 <!----- SIDE MENU BEGIN ------------------------------------------------------------------------>
+<!----------------------------------------------------------------------------------------------->
 <ion-split-pane contentId="menu-content">
   <ion-menu
     contentId="menu-content"
@@ -55,24 +56,37 @@
   </ion-menu>
   <ion-content id="menu-content">
     <!---- SIDE MENU ENDS---------------------------------------------------------------------------->
-
+    <!----------------------------------------------------------------------------------------------->
     <!------- PAGE HEADER -------------------------------------------------------------------------------------->
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-menu-button></ion-menu-button>
-        </ion-buttons>
-        <ion-title>{{ this.selectedView }}</ion-title></ion-toolbar
-      ></ion-header
-    >
+          <ion-menu-button></ion-menu-button> </ion-buttons
+      >
+        <ion-row>
+          <ion-col size="6"
+            ><ion-title><b>{{ this.selectedView }}</b></ion-title></ion-col
+          >
+          <ion-col size="6"
+            ><canvas
+            [hidden]="!this.myOscVisible"
+            height="32px"
+              id="myOscilloscope"
+            ></canvas>
+          </ion-col>
+        </ion-row>
+      </ion-toolbar>
+    </ion-header>
     <!------------------------------------------------------------------------------------------->
-
+    <!----------------------------------------------------------------------------------------------->
     <ion-grid class="">
       <!-----  CORE BEGINS   -------------------------------------------------------------------------->
       <ion-row class="animateDelay" [hidden]="this.selectedView != 'Core'">
         <ion-col size="12">
           <ion-item>
-            <ion-label position="stacked">Clock Speed : {{ this.BPM }} b.p.m.</ion-label>
+            <ion-label position="stacked"
+              >Clock Speed : {{ this.BPM }} b.p.m.</ion-label
+            >
             <ion-range
               (ionChange)="updateBPM()"
               type="range"
@@ -81,6 +95,62 @@
               [(ngModel)]="this.BPM"
             ></ion-range>
           </ion-item>
+          <ion-row>
+            <ion-col size="12">
+
+              <ion-item>
+                <ion-label><b>Oscilloscope</b></ion-label>
+                <ion-toggle
+                  (ionChange)="this.updateOscilloscopeVisible()"
+                  [(ngModel)]="this.myOscVisible"
+                ></ion-toggle>
+              </ion-item>
+              <ion-row [hidden]="!this.myOscVisible">
+                <ion-col size="12">
+
+                  <ion-item>
+                    <ion-label position="stacked"
+                      >Speed : {{ this.myOscIntervalNew }} ms</ion-label
+                    >
+                    <ion-range
+                      (ionChange)="updateOscilloscopeInterval()"
+                      type="range"
+                      min="1"
+                      max="3000"
+                      [(ngModel)]="this.myOscIntervalNew"
+                    ></ion-range>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="stacked"
+                      >Resolution : {{ this.myOscResolution }}-bit</ion-label
+                    >
+                    <ion-range
+                      (ionChange)="updateOscilloscopeResolution()"
+                      snaps
+                      ticks
+                      type="range"
+                      min="0"
+                      [max]="this.myOscResolutions.length-1"
+                      [(ngModel)]="this.myOscResolutionsIndex"
+                    ></ion-range>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="stacked"
+                      >Smoothing : {{ this.myOscSmoothing }}</ion-label
+                    >
+                    <ion-range
+                      (ionChange)="updateOscilloscopeSmoothing()"
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.001"
+                      [(ngModel)]="this.myOscSmoothing"
+                    ></ion-range>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
           <!---
           <ion-item>
             <ion-label position="stacked">Swing : {{ this.trSwing }}</ion-label>
@@ -98,24 +168,25 @@
       </ion-row>
       <!------CORE ENDS ---------------------------------------------------------------------------->
 
+      <!----------------------------------------------------------------------------------------------->
       <!----  DRUM BEGINS --------------------------------------------------------------------------->
       <ion-row class="animateDelay" [hidden]="this.selectedView != 'Drum'">
         <ion-col size="12">
           <ion-row>
             <ion-col size="12">
               <ion-item>
-              <ion-button
-                color="light"
-                class="fz-btn"
-                (click)="
-                  drumSynth.triggerAttackRelease(
-                    this.notes[this.noteIndex],
-                    time
-                  )
-                "
-                >TRIGGER DRUM</ion-button
-              >
-            </ion-item>
+                <ion-button
+                  color="light"
+                  class="fz-btn"
+                  (click)="
+                    drumSynth.triggerAttackRelease(
+                      this.notes[this.noteIndex],
+                      time
+                    )
+                  "
+                  >TRIGGER DRUM</ion-button
+                >
+              </ion-item>
             </ion-col>
           </ion-row>
 
@@ -127,7 +198,7 @@
               <ion-row>
                 <ion-col size="12">
                   <ion-item>
-                    <ion-label  position="stacked"
+                    <ion-label position="stacked"
                       >Note : {{ this.notes[this.noteIndex] }}</ion-label
                     >
                     <ion-range
@@ -189,7 +260,10 @@
             <ion-col size="12">
               <ion-item>
                 <ion-label><b>Loop</b></ion-label>
-                <ion-toggle (ionChange)="this.updateLooping()" [(ngModel)]="this.looping"></ion-toggle>
+                <ion-toggle
+                  (ionChange)="this.updateLooping()"
+                  [(ngModel)]="this.looping"
+                ></ion-toggle>
               </ion-item>
               <ion-row [hidden]="!this.looping">
                 <ion-col size="12">
@@ -211,7 +285,9 @@
                   </ion-item>
 
                   <ion-item>
-                    <ion-label position="stacked">Arpeggiator : {{ this.arpInterval }}</ion-label>
+                    <ion-label position="stacked"
+                      >Arpeggiator : {{ this.arpInterval }}</ion-label
+                    >
                     <ion-range
                       [disabled]="!this.looping"
                       snaps
@@ -229,6 +305,7 @@
       </ion-row>
       <!-------DRUM ENDS  --------------------------------------------------------------------------->
 
+      <!----------------------------------------------------------------------------------------------->
       <!-----  EFFECTS BEGINS ----------------------------------------------------------------------->
       <ion-row class="animateDelay" [hidden]="this.selectedView != 'Effects'">
         <ion-col>
@@ -244,7 +321,9 @@
               <ion-row [hidden]="!this.pitchShifterToggle">
                 <ion-col size="12">
                   <ion-item>
-                    <ion-label position="stacked">Pitch : {{ this.pitch }} semitones</ion-label>
+                    <ion-label position="stacked"
+                      >Pitch : {{ this.pitch }} semitones</ion-label
+                    >
                     <ion-range
                       [disabled]="!this.pitchShifterToggle"
                       snaps
@@ -258,7 +337,9 @@
                   </ion-item>
 
                   <ion-item>
-                    <ion-label position="stacked">Sample Size : {{ this.psWindowSize }}</ion-label>
+                    <ion-label position="stacked"
+                      >Sample Size : {{ this.psWindowSize }}</ion-label
+                    >
                     <ion-range
                       [disabled]="!this.pitchShifterToggle"
                       (ionChange)="updateWindowSize()"
@@ -270,7 +351,9 @@
                     ></ion-range>
                   </ion-item>
                   <ion-item>
-                    <ion-label position="stacked">Delay Time : {{ this.psDelayTime }}s</ion-label>
+                    <ion-label position="stacked"
+                      >Delay Time : {{ this.psDelayTime }}s</ion-label
+                    >
                     <ion-range
                       [disabled]="!this.pitchShifterToggle"
                       (ionChange)="updatePsDelayTime()"
@@ -283,7 +366,9 @@
                   </ion-item>
 
                   <ion-item>
-                    <ion-label position="stacked">Feedback : {{ this.psFeedback }}</ion-label>
+                    <ion-label position="stacked"
+                      >Feedback : {{ this.psFeedback }}</ion-label
+                    >
                     <ion-range
                       [disabled]="!this.pitchShifterToggle"
                       (ionChange)="updatePsFeedback()"
@@ -292,9 +377,11 @@
                       max="0.75"
                       step="0.0001"
                       [(ngModel)]="this.psFeedback"
-                    ></ion-range>
-                  </ion-item><ion-item>
-                    <ion-label position="stacked">Wetness : {{ this.psWetness }}</ion-label>
+                    ></ion-range> </ion-item
+                  ><ion-item>
+                    <ion-label position="stacked"
+                      >Wetness : {{ this.psWetness }}</ion-label
+                    >
                     <ion-range
                       [disabled]="!this.pitchShifterToggle"
                       (ionChange)="updatePsWetness()"
@@ -321,7 +408,9 @@
               <ion-row [hidden]="!this.bitCrusherToggle">
                 <ion-col size="12">
                   <ion-item>
-                    <ion-label position="stacked">Bitrate : {{ this.bitrate }}-Bit</ion-label>
+                    <ion-label position="stacked"
+                      >Bitrate : {{ this.bitrate }}-Bit</ion-label
+                    >
                     <ion-range
                       [disabled]="!this.bitCrusherToggle"
                       snaps
@@ -334,7 +423,9 @@
                     ></ion-range>
                   </ion-item>
                   <ion-item>
-                    <ion-label position="stacked">Wetness : {{ this.bcWetness }}</ion-label>
+                    <ion-label position="stacked"
+                      >Wetness : {{ this.bcWetness }}</ion-label
+                    >
                     <ion-range
                       [disabled]="!this.bitCrusherToggle"
                       (ionChange)="updateBcWetness()"
@@ -354,6 +445,7 @@
       <!-----      EFFECTS ENDS    ----------------------------------------------------------------->
     </ion-grid>
 
+    <!----------------------------------------------------------------------------------------------->
     <!--- END OF SIDE MENU --------------------------------------------------------------------------->
   </ion-content>
 </ion-split-pane>

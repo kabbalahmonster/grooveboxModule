@@ -1,17 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 
-import * as Tone from 'tone';
+import * as Tone from "tone";
+import { TimeInterval } from "rxjs";
 
 @Component({
-  selector: 'app-drum-engine',
-  templateUrl: './drum-engine.component.html',
-  styleUrls: ['./drum-engine.component.scss']
+  selector: "app-drum-engine",
+  templateUrl: "./drum-engine.component.html",
+  styleUrls: ["./drum-engine.component.scss"]
 })
 export class DrumEngineComponent implements OnInit {
   // declare variables
   chainList: AudioNode[];
 
-  VIEW_DEFAULT = 'Drum';
+  myOscilloscope: any;
+  myOscCtx: any;
+  myOscLen: number;
+  myOscInterval: any;
+  myOscIntervalNew: number;
+  myOscResolution:number;
+  myOscResolutions:number[];
+  myOscResolutionsIndex:number;
+  myOscVisible:boolean;
+  myOscSmoothing:number;
+
+  analyser: Tone.Analyser;
+
+  VIEW_DEFAULT = "Drum";
   selectedView: string;
 
   effectsHidden: boolean;
@@ -27,7 +41,7 @@ export class DrumEngineComponent implements OnInit {
 
   crusher: any;
   bitrate: number;
-  bcWetness:number;
+  bcWetness: number;
 
   shifter: any;
   pitch: number;
@@ -59,7 +73,7 @@ export class DrumEngineComponent implements OnInit {
     this.effectsHidden = true;
     this.activeView = 0;
     this.bitrate = 4;
-    this.bcWetness=0.5;
+    this.bcWetness = 0.5;
     this.pitch = 0;
     this.psDelayTime = 0;
     this.psFeedback = 0;
@@ -69,20 +83,26 @@ export class DrumEngineComponent implements OnInit {
 
     this.selectedView = this.VIEW_DEFAULT;
 
+    this.myOscResolutions = [2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384];
+    this.myOscResolutionsIndex = 7;
+    this.myOscVisible=true;
+    this.myOscSmoothing=1;
+    this.myOscResolution=this.myOscResolutions[this.myOscResolutionsIndex];
+
     this.waveList = [
-      'fmsine',
-      'fmsawtooth',
-      'fmsquare',
-      'fmtriangle',
-      'amsine',
-      'amsawtooth',
-      'amsquare',
-      'amtriangle',
-      'fatsine',
-      'fatsawtooth',
-      'fatsquare',
-      'fattriangle',
-      'pwm'
+      "fmsine",
+      "fmsawtooth",
+      "fmsquare",
+      "fmtriangle",
+      "amsine",
+      "amsawtooth",
+      "amsquare",
+      "amtriangle",
+      "fatsine",
+      "fatsawtooth",
+      "fatsquare",
+      "fattriangle",
+      "pwm"
     ];
     this.waveIndex = this.waveList.length - 1;
     this.drumSynth = new Tone.MembraneSynth({
@@ -93,21 +113,21 @@ export class DrumEngineComponent implements OnInit {
     this.envDecay = 0.8;
     this.envPitchDecay = 0.2;
     this.loopInterval = [
-      '1n',
-      '2n',
-      '2t',
-      '3n',
-      '3t',
-      '4n',
-      '4t',
-      '8n',
-      '8t',
-      '16n',
-      '16t',
-      '32n',
-      '32t',
-      '64n',
-      '64t'
+      "1n",
+      "2n",
+      "2t",
+      "3n",
+      "3t",
+      "4n",
+      "4t",
+      "8n",
+      "8t",
+      "16n",
+      "16t",
+      "32n",
+      "32t",
+      "64n",
+      "64t"
     ];
     this.intervalIndex = 5;
     this.noteIndex = 0;
@@ -119,8 +139,22 @@ export class DrumEngineComponent implements OnInit {
     this.shifter = new Tone.PitchShift(this.pitch);
     this.crusher = new Tone.BitCrusher(this.bitrate);
 
+    this.analyser = new Tone.Analyser({
+      type: "waveform",
+      size: this.myOscResolution,
+      smoothing: this.myOscSmoothing
+    });
+    this.myOscilloscope = document.getElementById("myOscilloscope");
+    this.myOscCtx = this.myOscilloscope.getContext("2d");
+    this.myOscLen = this.analyser.getValue().length;
     this.updateChain();
+
+    this.myOscIntervalNew = 175;
+    this.myOscInterval = setInterval(() => {
+      this.draw();
+    }, this.myOscIntervalNew);
   }
+
   setup(): void {
     this.updateBPM();
 
@@ -134,6 +168,7 @@ export class DrumEngineComponent implements OnInit {
       } else if (this.noteIndex < 0) {
         this.noteIndex += this.notes.length;
       }
+      console.log(this.analyser.getValue());
     }, this.loopInterval[this.intervalIndex]);
     this.loopBeat.start(0);
   }
@@ -147,6 +182,33 @@ export class DrumEngineComponent implements OnInit {
     } else {
       this.stopLoop();
     }
+  }
+
+  updateOscilloscopeResolution(){
+    this.myOscResolution=this.myOscResolutions[this.myOscResolutionsIndex];
+    this.analyser.size=this.myOscResolution;
+  }
+
+  updateOscilloscopeInterval() {
+    clearInterval(this.myOscInterval);
+
+    this.myOscInterval = setInterval(() => {
+      this.draw();
+    }, this.myOscIntervalNew);
+  }
+  updateOscilloscopeVisible(){
+    if(this.myOscVisible){
+      this.myOscInterval = setInterval(() => {
+        this.draw();
+      }, this.myOscIntervalNew);
+    }else{
+
+    clearInterval(this.myOscInterval);
+    }
+  }
+
+  updateOscilloscopeSmoothing(){
+    this.analyser.smoothing=this.myOscSmoothing;
   }
 
   updateBPM(): void {
@@ -205,15 +267,15 @@ export class DrumEngineComponent implements OnInit {
   populateNotes(): void {
     this.notes = [];
     for (let x = 1; x <= 6; x++) {
-      this.notes.push('c' + x);
-      this.notes.push('d' + x);
-      this.notes.push('e' + x);
-      this.notes.push('f' + x);
-      this.notes.push('g' + x);
-      this.notes.push('a' + x);
-      this.notes.push('b' + x);
+      this.notes.push("c" + x);
+      this.notes.push("d" + x);
+      this.notes.push("e" + x);
+      this.notes.push("f" + x);
+      this.notes.push("g" + x);
+      this.notes.push("a" + x);
+      this.notes.push("b" + x);
     }
-    console.log('notes:' + this.notes);
+    console.log("notes:" + this.notes);
   }
 
   // update current note
@@ -239,14 +301,49 @@ export class DrumEngineComponent implements OnInit {
     } else {
       this.crusher.disconnect(0);
     }
+    // add analyser
+    this.chainList.push(this.analyser);
     // add master
     this.chainList.push(Tone.Master);
-    console.log('inside updateChain : ' + this.chainList.length);
+    console.log("inside updateChain : " + this.chainList.length);
 
     // connect
     for (let i = 1; i < this.chainList.length; i++) {
-      console.log('value of i : ' + i);
+      console.log("value of i : " + i);
       this.chainList[i - 1].connect(this.chainList[i]);
     }
+  }
+
+  // ---------------- OSCILLOSCOPE--------------------------------------------------------------------
+  draw() {
+    //let drawOsc = requestAnimationFrame(draw);
+    console.log("DRAWING IN");
+    this.myOscCtx.clearRect(
+      0,
+      0,
+      this.myOscilloscope.width,
+      this.myOscilloscope.height
+    );
+    let dataArray = this.analyser.getValue();
+    console.log(dataArray);
+    this.myOscCtx.lineWidth = 2;
+    this.myOscCtx.strokeStyle = "rgb(0,0,0)";
+    this.myOscCtx.beginPath();
+    this.myOscLen=dataArray.length;
+    let sliceWidth = this.myOscilloscope.width / (this.myOscLen-1);
+    let x = 0;
+    for (let i = 0; i < this.myOscLen; i++) {
+      let y = dataArray[i] * this.myOscilloscope.height;
+
+      if (i == 0) {
+        this.myOscCtx.moveTo(x, y);
+      } else {
+        this.myOscCtx.lineTo(x, y);
+      }
+      x += sliceWidth;
+    }
+    this.myOscCtx.stroke();
+
+    console.log("DRAWING OUT");
   }
 }

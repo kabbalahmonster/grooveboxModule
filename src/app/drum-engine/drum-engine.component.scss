@@ -44,3 +44,14 @@ ion-label {
 .animateDelay {
   transform: 1s;
 }
+
+#myOscilloscope{
+  height: 32px;
+  width:100%;
+  margin-right:15px;
+  border-radius:5px;
+  border: solid black 1px;
+  display: flex;
+  transform: rotate(180deg);
+  transition: 0.5s;
+}
