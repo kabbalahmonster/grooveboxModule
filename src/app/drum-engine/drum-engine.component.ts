@@ -57,16 +57,14 @@ export class DrumEngineComponent implements OnInit {
   // --------------------filter variables
   filter: Tone.Filter;
   filterToggle: boolean;
-  filterTypeIndex:number;
-  filterTypesList:string[];
-  filterFrequency:number;
-  filterQ:number;
-  filterGain:number;
-  filterDetune:number;
-  filterRolloffList:number[];
-  filterRollofffIndex:number;
-
-
+  filterTypeIndex: number;
+  filterTypesList: string[];
+  filterFrequency: number;
+  filterQ: number;
+  filterGain: number;
+  filterDetune: number;
+  filterRolloffList: number[];
+  filterRolloffIndex: number;
 
   envDecay: number;
   envPitchDecay: number;
@@ -85,7 +83,7 @@ export class DrumEngineComponent implements OnInit {
   bitCrusherToggle: boolean;
   pitchShifterToggle: boolean;
 
-  constructor() {}
+  constructor() { }
   ngOnInit() {
     // initialize variables
     this.effectsHidden = true;
@@ -170,22 +168,26 @@ export class DrumEngineComponent implements OnInit {
     this.shifter = new Tone.PitchShift(this.pitch);
     this.crusher = new Tone.BitCrusher(this.bitrate);
 
-
-
     // ------------------------------ filter initialization
     this.filterToggle = true;
-    this.filterTypesList=['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'notch', 'allpass','peaking'];
-    this.filterRolloffList=[-12, -24, -48, -96];
-    this.filterTypeIndex=0;
-    this.filterRollofffIndex=0;
-    this.filterFrequency=1000;
-    this.filterGain=1;
-    this.filterQ=1;
-    this.filterDetune=0;
+    this.filterTypesList = [
+      'lowpass',
+      'highpass',
+      'bandpass',
+      'allpass',
+      'notch',
+      'lowshelf',
+      'highshelf',
+      'peaking'
+    ];
+    this.filterRolloffList = [-12, -24, -48, -96];
+    this.filterTypeIndex = 0;
+    this.filterRolloffIndex = 0;
+    this.filterFrequency = 1000;
+    this.filterGain = 1;
+    this.filterQ = 1;
+    this.filterDetune = 0;
     this.filter = new Tone.Filter();
-
-
-
 
     // ------------------------------ analyzer initialization
     this.analyser = new Tone.Analyser({
@@ -217,7 +219,7 @@ export class DrumEngineComponent implements OnInit {
       } else if (this.noteIndex < 0) {
         this.noteIndex += this.notes.length;
       }
-      console.log(this.analyser.getValue());
+      //console.log(this.analyser.getValue());
     }, this.loopInterval[this.intervalIndex]);
     this.loopBeat.start(0);
   }
@@ -323,7 +325,7 @@ export class DrumEngineComponent implements OnInit {
       this.notes.push('a' + x);
       this.notes.push('b' + x);
     }
-    console.log('notes:' + this.notes);
+   // console.log('notes:' + this.notes);
   }
 
   // update current note
@@ -361,31 +363,39 @@ export class DrumEngineComponent implements OnInit {
     this.chainList.push(this.analyser);
     // add master
     this.chainList.push(Tone.Master);
-    console.log('inside updateChain : ' + this.chainList.length);
+    // console.log('inside updateChain : ' + this.chainList.length);
 
     // connect
     for (let i = 1; i < this.chainList.length; i++) {
-      console.log('value of i : ' + i);
+      // console.log('value of i : ' + i);
       this.chainList[i - 1].connect(this.chainList[i]);
     }
   }
 
   // --------------------- FILTER METHODS -------------------------------------------------------------
   // filter type
-  updateFilterType(){
-    this.filter.type=this.filterTypesList[this.filterTypeIndex];
+  updateFilterType() {
+    this.filter.type = this.filterTypesList[this.filterTypeIndex];
   }
   // cutoff frequency
-  updateFilterFrequency(){
-    this.filter.frequency.value=this.filterFrequency;
+  updateFilterFrequency() {
+    this.filter.frequency.value = this.filterFrequency;
   }
   // filter gain
-  updateFilterGain(){
-    this.filter.gain.value=this.filterGain;
+  updateFilterGain() {
+    this.filter.gain.value = this.filterGain;
   }
   // filter Q
-  updateFilterQ(){
-    this.filter.Q.value=this.filterQ;
+  updateFilterQ() {
+    this.filter.Q.value = this.filterQ;
+  }
+  // filter detune
+  updateFilterDetune() {
+    this.filter.detune.value = this.filterDetune;
+  }
+  // filter rolloff
+  updateFilterRolloff(){
+    this.filter.rolloff=this.filterRolloffList[this.filterRolloffIndex];
   }
 
   // -----------------------------------------------------------------------------------------------
@@ -402,7 +412,7 @@ export class DrumEngineComponent implements OnInit {
     );
     const dataArray = this.analyser.getValue();
     // console.log(dataArray);
-    this.myOscCtx.lineWidth = 1;
+    this.myOscCtx.lineWidth = 2;
     this.myOscCtx.strokeStyle = 'rgb(0,0,0)';
     this.myOscCtx.beginPath();
     this.myOscLen = dataArray.length;
