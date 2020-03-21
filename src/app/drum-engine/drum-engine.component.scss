@@ -58,16 +58,29 @@ ion-label {
   border-radius:10px;
   border: solid black 2px;
   display: flex;
-  transform: rotate(180deg);
+  transform: scaleY(-1);
   transition: 1s;
   max-width: 60%;
   
 }
 #myOscilloscope:hover{
   height: 160px;
-  transform: rotate(180deg) scaleX(1.6) translateX(20%);
+  transform: scaleY(-1) scaleX(1.6) translateX(-20%);
 }
+#FScope{
+  width:400px;
+  height: 100px;
+  background-color: white;
+  //margin-left:auto;
 
+  //margin-right:15px;
+  border-radius:10px;
+  border: solid black 2px;
+  display: flex;
+  transform: scaleY(-1);
+  transition: 1s;
+  max-width: 60%;
+}
 .page-title{
   margin-left: 5%;
 }

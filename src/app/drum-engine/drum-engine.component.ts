@@ -12,6 +12,11 @@ export class DrumEngineComponent implements OnInit {
   // declare variables
   chainList: AudioNode[];
 
+  // filter scope variables
+  FScope:any;
+  FScopeCtx: any;
+  FScopeInterval:any;
+
   // oscilloscope variables
   myOscilloscope: any;
   myOscCtx: any;
@@ -198,12 +203,26 @@ export class DrumEngineComponent implements OnInit {
     this.myOscilloscope = document.getElementById('myOscilloscope');
     this.myOscCtx = this.myOscilloscope.getContext('2d');
     this.myOscLen = this.analyser.getValue().length;
-    this.updateChain();
 
+
+    
     this.myOscIntervalNew = 1;
     this.myOscInterval = setInterval(() => {
       this.draw();
     }, this.myOscIntervalNew);
+
+    // FScope initialization
+    this.FScope = document.getElementById('FScope');
+    this.FScopeCtx = this.FScope.getContext('2d');
+    this.FScopeInterval = setInterval(() => {
+      this.drawFScope();
+    }, 16);
+
+
+    
+
+    // construct initial signal chain
+    this.updateChain();
   }
 
   setup(): void {
@@ -380,6 +399,7 @@ export class DrumEngineComponent implements OnInit {
   // cutoff frequency
   updateFilterFrequency() {
     this.filter.frequency.value = this.filterFrequency;
+    console.log(this.filter.getFrequencyResponse());
   }
   // filter gain
   updateFilterGain() {
@@ -411,20 +431,29 @@ export class DrumEngineComponent implements OnInit {
       this.myOscilloscope.height
     );
     const dataArray = this.analyser.getValue();
+    //const dataArray = this.filter.getFrequencyResponse();
+
     // console.log(dataArray);
     this.myOscCtx.lineWidth = 2;
     this.myOscCtx.strokeStyle = 'rgb(0,0,0)';
     this.myOscCtx.beginPath();
+    // store length of dataArray
     this.myOscLen = dataArray.length;
+
+    // scale x interval to canvas width
     const sliceWidth = this.myOscilloscope.width / (this.myOscLen - 1);
     let x = 0;
     let y: number;
     const scopeOffset = this.myOscilloscope.height / 2;
-    for (let i = 0; i < this.myOscLen; i++) {
+    const scopeScale = this.myOscilloscope.height/4;
+
+    dataArray.map(i=>
+    {
       if (this.myOscOffsetScope) {
-        y = dataArray[i] * scopeOffset + scopeOffset;
+        y = i * scopeScale + scopeOffset;
       } else {
-        y = dataArray[i] * this.myOscilloscope.height;
+        //y = (dataArray[i] * this.myOscilloscope.height;
+        y = i*scopeScale;
       }
 
       if (i === 0) {
@@ -433,8 +462,51 @@ export class DrumEngineComponent implements OnInit {
         this.myOscCtx.lineTo(x, y);
       }
       x += sliceWidth;
-    }
+    });
     this.myOscCtx.stroke();
+
+    // console.log("DRAWING OUT");
+  }
+
+  // ---------------- FILTER SCOPE--------------------------------------------------------------------
+  drawFScope() {
+    // let drawOsc = requestAnimationFrame(draw);
+    // console.log("DRAWING IN");
+    this.FScopeCtx.clearRect(
+      0,
+      0,
+      this.FScope.width,
+      this.FScope.height
+    );
+    //const dataArray = this.analyser.getValue();
+    const dataArray = this.filter.getFrequencyResponse();
+
+    // console.log(dataArray);
+    this.FScopeCtx.lineWidth = 2;
+    this.FScopeCtx.strokeStyle = 'rgb(0,0,0)';
+    this.FScopeCtx.beginPath();
+    // store length of dataArray
+    const frameLength = dataArray.length;
+
+    // scale x interval to canvas width
+    const sliceWidth = this.myOscilloscope.width / (frameLength - 1);
+    let x = 0;
+    let y: number;
+    const scopeOffset = this.FScope.height / 2;
+    const scopeScale = this.FScope.height/4;
+
+    dataArray.map(i=>
+    {
+        y = i*scopeScale;
+
+      if (i === 0) {
+        this.FScopeCtx.moveTo(x, y);
+      } else {
+        this.FScopeCtx.lineTo(x, y);
+      }
+      x += sliceWidth;
+    });
+    this.FScopeCtx.stroke();
 
     // console.log("DRAWING OUT");
   }
