@@ -49,9 +49,10 @@ ion-label {
 }
 
 #myOscilloscope{
-  width:100%;
+  width:80%;
   height: 44px;
   background-color: white;
+  margin-left:auto;
 
   margin-right:15px;
   border-radius:10px;
@@ -59,14 +60,12 @@ ion-label {
   display: flex;
   transform: rotate(180deg);
   transition: 1s;
-  max-width: 85%;
-  justify-self: left;
+  max-width: 60%;
   
 }
 #myOscilloscope:hover{
-  transform: scale(1);
   height: 160px;
-  transform: rotate(180deg);
+  transform: rotate(180deg) scaleX(1.6) translateX(20%);
 }
 
 .pageTitle{
