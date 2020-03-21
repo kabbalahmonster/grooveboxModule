@@ -1,12 +1,12 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit } from '@angular/core';
 
-import * as Tone from "tone";
-import { TimeInterval } from "rxjs";
+import * as Tone from 'tone';
+import { TimeInterval } from 'rxjs';
 
 @Component({
-  selector: "app-drum-engine",
-  templateUrl: "./drum-engine.component.html",
-  styleUrls: ["./drum-engine.component.scss"]
+  selector: 'app-drum-engine',
+  templateUrl: './drum-engine.component.html',
+  styleUrls: ['./drum-engine.component.scss']
 })
 export class DrumEngineComponent implements OnInit {
   // declare variables
@@ -18,16 +18,16 @@ export class DrumEngineComponent implements OnInit {
   myOscLen: number;
   myOscInterval: any;
   myOscIntervalNew: number;
-  myOscResolution:number;
-  myOscResolutions:number[];
-  myOscResolutionsIndex:number;
-  myOscVisible:boolean;
-  myOscSmoothing:number;
-  myOscOffsetScope:boolean;
+  myOscResolution: number;
+  myOscResolutions: number[];
+  myOscResolutionsIndex: number;
+  myOscVisible: boolean;
+  myOscSmoothing: number;
+  myOscOffsetScope: boolean;
 
   analyser: Tone.Analyser;
 
-  VIEW_DEFAULT = "Drum";
+  VIEW_DEFAULT = 'Drum';
   selectedView: string;
 
   effectsHidden: boolean;
@@ -41,16 +41,32 @@ export class DrumEngineComponent implements OnInit {
 
   looping: boolean;
 
+  // --------------------bitcrusher variables
   crusher: any;
   bitrate: number;
   bcWetness: number;
 
+  // --------------------pitch shifter variables
   shifter: any;
   pitch: number;
   psWindowSize: number;
   psDelayTime: number;
   psFeedback: number;
   psWetness: number;
+
+  // --------------------filter variables
+  filter: Tone.Filter;
+  filterToggle: boolean;
+  filterTypeIndex:number;
+  filterTypesList:string[];
+  filterFrequency:number;
+  filterQ:number;
+  filterGain:number;
+  filterDetune:number;
+  filterRolloffList:number[];
+  filterRollofffIndex:number;
+
+
 
   envDecay: number;
   envPitchDecay: number;
@@ -85,27 +101,39 @@ export class DrumEngineComponent implements OnInit {
 
     this.selectedView = this.VIEW_DEFAULT;
 
-    this.myOscResolutions = [16,32,64,128,256,512,1024,2048,4096,8192,16384];
-    this.myOscResolutionsIndex = this.myOscResolutions.length -1;
-    this.myOscVisible=true;
-    this.myOscSmoothing=1;
-    this.myOscResolution=this.myOscResolutions[this.myOscResolutionsIndex];
+    this.myOscResolutions = [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      1024,
+      2048,
+      4096,
+      8192,
+      16384
+    ];
+    this.myOscResolutionsIndex = this.myOscResolutions.length - 1;
+    this.myOscVisible = true;
+    this.myOscSmoothing = 1;
+    this.myOscResolution = this.myOscResolutions[this.myOscResolutionsIndex];
     this.myOscOffsetScope = true;
 
     this.waveList = [
-      "fmsine",
-      "fmsawtooth",
-      "fmsquare",
-      "fmtriangle",
-      "amsine",
-      "amsawtooth",
-      "amsquare",
-      "amtriangle",
-      "fatsine",
-      "fatsawtooth",
-      "fatsquare",
-      "fattriangle",
-      "pwm"
+      'fmsine',
+      'fmsawtooth',
+      'fmsquare',
+      'fmtriangle',
+      'amsine',
+      'amsawtooth',
+      'amsquare',
+      'amtriangle',
+      'fatsine',
+      'fatsawtooth',
+      'fatsquare',
+      'fattriangle',
+      'pwm'
     ];
     this.waveIndex = this.waveList.length - 1;
     this.drumSynth = new Tone.MembraneSynth({
@@ -116,21 +144,21 @@ export class DrumEngineComponent implements OnInit {
     this.envDecay = 1.5;
     this.envPitchDecay = 1;
     this.loopInterval = [
-      "1n",
-      "2n",
-      "2t",
-      "3n",
-      "3t",
-      "4n",
-      "4t",
-      "8n",
-      "8t",
-      "16n",
-      "16t",
-      "32n",
-      "32t",
-      "64n",
-      "64t"
+      '1n',
+      '2n',
+      '2t',
+      '3n',
+      '3t',
+      '4n',
+      '4t',
+      '8n',
+      '8t',
+      '16n',
+      '16t',
+      '32n',
+      '32t',
+      '64n',
+      '64t'
     ];
     this.intervalIndex = 6;
     this.noteIndex = 0;
@@ -142,13 +170,31 @@ export class DrumEngineComponent implements OnInit {
     this.shifter = new Tone.PitchShift(this.pitch);
     this.crusher = new Tone.BitCrusher(this.bitrate);
 
+
+
+    // ------------------------------ filter initialization
+    this.filterToggle = true;
+    this.filterTypesList=['lowpass', 'highpass', 'bandpass', 'lowshelf', 'highshelf', 'notch', 'allpass','peaking'];
+    this.filterRolloffList=[-12, -24, -48, -96];
+    this.filterTypeIndex=0;
+    this.filterRollofffIndex=0;
+    this.filterFrequency=1000;
+    this.filterGain=1;
+    this.filterQ=1;
+    this.filterDetune=0;
+    this.filter = new Tone.Filter();
+
+
+
+
+    // ------------------------------ analyzer initialization
     this.analyser = new Tone.Analyser({
-      type: "waveform",
+      type: 'waveform',
       size: this.myOscResolution,
       smoothing: this.myOscSmoothing
     });
-    this.myOscilloscope = document.getElementById("myOscilloscope");
-    this.myOscCtx = this.myOscilloscope.getContext("2d");
+    this.myOscilloscope = document.getElementById('myOscilloscope');
+    this.myOscCtx = this.myOscilloscope.getContext('2d');
     this.myOscLen = this.analyser.getValue().length;
     this.updateChain();
 
@@ -187,9 +233,9 @@ export class DrumEngineComponent implements OnInit {
     }
   }
 
-  updateOscilloscopeResolution(){
-    this.myOscResolution=this.myOscResolutions[this.myOscResolutionsIndex];
-    this.analyser.size=this.myOscResolution;
+  updateOscilloscopeResolution() {
+    this.myOscResolution = this.myOscResolutions[this.myOscResolutionsIndex];
+    this.analyser.size = this.myOscResolution;
   }
 
   updateOscilloscopeInterval() {
@@ -199,19 +245,18 @@ export class DrumEngineComponent implements OnInit {
       this.draw();
     }, this.myOscIntervalNew);
   }
-  updateOscilloscopeVisible(){
-    if(this.myOscVisible){
+  updateOscilloscopeVisible() {
+    if (this.myOscVisible) {
       this.myOscInterval = setInterval(() => {
         this.draw();
       }, this.myOscIntervalNew);
-    }else{
-
-    clearInterval(this.myOscInterval);
+    } else {
+      clearInterval(this.myOscInterval);
     }
   }
 
-  updateOscilloscopeSmoothing(){
-    this.analyser.smoothing=this.myOscSmoothing;
+  updateOscilloscopeSmoothing() {
+    this.analyser.smoothing = this.myOscSmoothing;
   }
 
   updateBPM(): void {
@@ -220,7 +265,7 @@ export class DrumEngineComponent implements OnInit {
   updateTrSwing(): void {
     Tone.Transport.swing = this.trSwing;
   }
-  //------------------ bit crusher parameters
+  // ------------------ bit crusher parameters
   updateBit(): void {
     this.crusher.bits = this.bitrate;
   }
@@ -270,15 +315,15 @@ export class DrumEngineComponent implements OnInit {
   populateNotes(): void {
     this.notes = [];
     for (let x = 1; x <= 6; x++) {
-      this.notes.push("c" + x);
-      this.notes.push("d" + x);
-      this.notes.push("e" + x);
-      this.notes.push("f" + x);
-      this.notes.push("g" + x);
-      this.notes.push("a" + x);
-      this.notes.push("b" + x);
+      this.notes.push('c' + x);
+      this.notes.push('d' + x);
+      this.notes.push('e' + x);
+      this.notes.push('f' + x);
+      this.notes.push('g' + x);
+      this.notes.push('a' + x);
+      this.notes.push('b' + x);
     }
-    console.log("notes:" + this.notes);
+    console.log('notes:' + this.notes);
   }
 
   // update current note
@@ -286,6 +331,7 @@ export class DrumEngineComponent implements OnInit {
     this.drumSynth.oscillator.frequency.value = this.notes[this.noteIndex];
   }
 
+  // ----------------------------------CHAIN UPDATER ---------------------------------------------
   // check for enabled modules and construct signal chain
   updateChain() {
     this.drumSynth.disconnect(0);
@@ -304,49 +350,74 @@ export class DrumEngineComponent implements OnInit {
     } else {
       this.crusher.disconnect(0);
     }
+
+    // add filter?
+    if (this.filterToggle) {
+      this.chainList.push(this.filter);
+    } else {
+      this.filter.disconnect(0);
+    }
     // add analyser
     this.chainList.push(this.analyser);
     // add master
     this.chainList.push(Tone.Master);
-    console.log("inside updateChain : " + this.chainList.length);
+    console.log('inside updateChain : ' + this.chainList.length);
 
     // connect
     for (let i = 1; i < this.chainList.length; i++) {
-      console.log("value of i : " + i);
+      console.log('value of i : ' + i);
       this.chainList[i - 1].connect(this.chainList[i]);
     }
   }
 
+  // --------------------- FILTER METHODS -------------------------------------------------------------
+  // filter type
+  updateFilterType(){
+    this.filter.type=this.filterTypesList[this.filterTypeIndex];
+  }
+  // cutoff frequency
+  updateFilterFrequency(){
+    this.filter.frequency.value=this.filterFrequency;
+  }
+  // filter gain
+  updateFilterGain(){
+    this.filter.gain.value=this.filterGain;
+  }
+  // filter Q
+  updateFilterQ(){
+    this.filter.Q.value=this.filterQ;
+  }
+
+  // -----------------------------------------------------------------------------------------------
+
   // ---------------- OSCILLOSCOPE--------------------------------------------------------------------
   draw() {
-    //let drawOsc = requestAnimationFrame(draw);
-    //console.log("DRAWING IN");
+    // let drawOsc = requestAnimationFrame(draw);
+    // console.log("DRAWING IN");
     this.myOscCtx.clearRect(
       0,
       0,
       this.myOscilloscope.width,
       this.myOscilloscope.height
     );
-    let dataArray = this.analyser.getValue();
-    //console.log(dataArray);
-    this.myOscCtx.lineWidth = 2;
-    this.myOscCtx.strokeStyle = "rgb(0,0,0)";
+    const dataArray = this.analyser.getValue();
+    // console.log(dataArray);
+    this.myOscCtx.lineWidth = 1;
+    this.myOscCtx.strokeStyle = 'rgb(0,0,0)';
     this.myOscCtx.beginPath();
-    this.myOscLen=dataArray.length;
-    let sliceWidth = this.myOscilloscope.width / (this.myOscLen-1);
+    this.myOscLen = dataArray.length;
+    const sliceWidth = this.myOscilloscope.width / (this.myOscLen - 1);
     let x = 0;
-    let y:number;
-    let scopeOffset = this.myOscilloscope.height/2;
+    let y: number;
+    const scopeOffset = this.myOscilloscope.height / 2;
     for (let i = 0; i < this.myOscLen; i++) {
-
-      if(this.myOscOffsetScope){
-
-        y = (dataArray[i] * (scopeOffset))+(scopeOffset);
-      }else{
-        y=dataArray[i] * this.myOscilloscope.height;
+      if (this.myOscOffsetScope) {
+        y = dataArray[i] * scopeOffset + scopeOffset;
+      } else {
+        y = dataArray[i] * this.myOscilloscope.height;
       }
 
-      if (i == 0) {
+      if (i === 0) {
         this.myOscCtx.moveTo(x, y);
       } else {
         this.myOscCtx.lineTo(x, y);
@@ -355,6 +426,6 @@ export class DrumEngineComponent implements OnInit {
     }
     this.myOscCtx.stroke();
 
-    //console.log("DRAWING OUT");
+    // console.log("DRAWING OUT");
   }
 }
