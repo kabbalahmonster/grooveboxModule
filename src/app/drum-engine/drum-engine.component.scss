@@ -67,11 +67,16 @@ ion-label {
   height: 160px;
   transform: scaleY(-1) scaleX(1.6) translateX(-20%);
 }
+#FScope:hover{
+  transform: scaleY(-1) scaleX(1.6) translateX(20%);
+  height: 160px;
+}
 #FScope{
+  z-index: 1000;
   width:400px;
   height: 100px;
   background-color: white;
-  //margin-left:auto;
+  margin-left:1%;
 
   //margin-right:15px;
   border-radius:10px;

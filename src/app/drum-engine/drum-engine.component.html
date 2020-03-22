@@ -492,7 +492,7 @@
             ></ion-toggle>
           </ion-item>
           <ion-item>
-
+            <!-----------FILTER FREQUENCY RESPONSE SCOPE------->
           <canvas
           [hidden]="!this.filterToggle"
           height="100px"
@@ -518,12 +518,7 @@
               </ion-item>
               <ion-item
                 [hidden]="
-                  !this.filterToggle ||
-                  (this.filterTypesList[this.filterTypeIndex] != 'lowpass' &&
-                    this.filterTypesList[this.filterTypeIndex] != 'highpass' &&
-                    this.filterTypesList[this.filterTypeIndex] != 'bandpass' &&
-                    this.filterTypesList[this.filterTypeIndex] != 'allpass' &&
-                    this.filterTypesList[this.filterTypeIndex] != 'notch')
+                  !this.filterToggle
                 "
               >
                 <ion-label position="stacked"
@@ -531,14 +526,7 @@
                 >
                 <ion-range
                   [disabled]="
-                    !this.filterToggle ||
-                    (this.filterTypesList[this.filterTypeIndex] != 'lowpass' &&
-                      this.filterTypesList[this.filterTypeIndex] !=
-                        'highpass' &&
-                      this.filterTypesList[this.filterTypeIndex] !=
-                        'bandpass' &&
-                      this.filterTypesList[this.filterTypeIndex] != 'allpass' &&
-                      this.filterTypesList[this.filterTypeIndex] != 'notch')
+                    !this.filterToggle 
                   "
                   (ionChange)="updateFilterFrequency()"
                   type="range"
@@ -547,67 +535,57 @@
                   [(ngModel)]="this.filterFrequency"
                 ></ion-range>
               </ion-item>
+              <!-----------FILTER Q-->
               <ion-item
                 [hidden]="
                   !this.filterToggle ||
-                  (this.filterTypesList[this.filterTypeIndex] != 'lowpass' &&
-                    this.filterTypesList[this.filterTypeIndex] != 'highpass' &&
-                    this.filterTypesList[this.filterTypeIndex] != 'bandpass' &&
-                    this.filterTypesList[this.filterTypeIndex] != 'allpass' &&
-                    this.filterTypesList[this.filterTypeIndex] != 'notch')
+                  this.filterTypesList[this.filterTypeIndex] == 'highshelf' ||
+                    this.filterTypesList[this.filterTypeIndex] == 'lowshelf' 
                 "
               >
                 <ion-label position="stacked"
-                  >Q Factor: {{ this.filterQ.toFixed(2) }}
+                  >Q Factor: {{ this.filterQ.toFixed(3) }}
                 </ion-label>
                 <ion-range
                   [disabled]="
                     !this.filterToggle ||
-                    (this.filterTypesList[this.filterTypeIndex] != 'lowpass' &&
-                      this.filterTypesList[this.filterTypeIndex] !=
-                        'highpass' &&
-                      this.filterTypesList[this.filterTypeIndex] !=
-                        'bandpass' &&
-                      this.filterTypesList[this.filterTypeIndex] != 'allpass' &&
-                      this.filterTypesList[this.filterTypeIndex] != 'notch')
+                    this.filterTypesList[this.filterTypeIndex] == 'highshelf' ||
+                      this.filterTypesList[this.filterTypeIndex] == 'lowshelf'
                   "
                   (ionChange)="updateFilterQ()"
                   type="range"
                   min="0"
-                  max="100"
-                  step="0.01"
+                  max="12"
+                  step="0.001"
                   [(ngModel)]="this.filterQ"
                 ></ion-range>
               </ion-item>
-
               <ion-item
                 [hidden]="
                   !this.filterToggle ||
                   (this.filterTypesList[this.filterTypeIndex] != 'lowshelf' &&
-                    this.filterTypesList[this.filterTypeIndex] != 'highshelf' &&
-                    this.filterTypesList[this.filterTypeIndex] != 'peaking')
+                  this.filterTypesList[this.filterTypeIndex] != 'highshelf'&&
+                  this.filterTypesList[this.filterTypeIndex] != 'peaking')
                 "
               >
                 <ion-label position="stacked"
-                  >Gain: {{ this.filterGain }}
+                  >Gain: {{ this.filterGain.toFixed(3) }}
                 </ion-label>
                 <ion-range
                   [disabled]="
                     !this.filterToggle ||
                     (this.filterTypesList[this.filterTypeIndex] != 'lowshelf' &&
-                      this.filterTypesList[this.filterTypeIndex] !=
-                        'highshelf' &&
-                      this.filterTypesList[this.filterTypeIndex] != 'peaking')
+                    this.filterTypesList[this.filterTypeIndex] != 'highshelf'&&
+                    this.filterTypesList[this.filterTypeIndex] != 'peaking')
                   "
                   (ionChange)="updateFilterGain()"
                   type="range"
-                  min="-100"
-                  max="100"
-                  step="0.01"
+                  min="-12"
+                  max="12"
+                  step="0.001"
                   [(ngModel)]="this.filterGain"
                 ></ion-range>
-              </ion-item>
-
+                </ion-item>
               <ion-item>
                 <ion-label position="stacked"
                   >Detune: {{ this.filterDetune }} cents</ion-label
